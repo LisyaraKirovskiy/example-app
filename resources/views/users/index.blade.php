@@ -32,6 +32,7 @@
                             <thead class="table-light">
                                 <tr>
                                     <th>ID</th>
+                                    <th>Аватар</th>
                                     <th>Пользователь</th>
                                     <th>Email</th>
                                     <th>Дата регистрации</th>
@@ -44,13 +45,19 @@
                                     <tr>
                                         <td class="fw-bold">#{{ $user->id }}</td>
                                         <td>
-                                            <div class="d-flex align-items-center">
-                                                <div class="avatar-circle me-3">
-                                                    <div class="avatar-initials fw-bold text-white rounded-circle d-flex align-items-center justify-content-center"
-                                                        style="width: 40px; height: 40px; background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);">
-                                                        {{ strtoupper(substr($user->name, 0, 1)) }}
-                                                    </div>
+                                            <div class="">
+                                                <div class="rounded-circle bg-gradient d-flex align-items-center justify-content-center text-white fw-bold shadow-sm overflow-hidden"
+                                                    style="width: 40px; height: 40px; background: #6366f1;">
+                                                    <img id="avatar-preview" src="{{ $user->avatarPath() }}" alt="Avatar"
+                                                        class="rounded-circle w-100 h-100 object-fit-cover"
+                                                        style="margin-left:18px;">
+                                                    <span id="avatar-placeholder" class="fs-1">?</span>
                                                 </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+
                                                 <div>
                                                     <div class="fw-bold">{{ $user->name }}</div>
                                                     @if($user->email_verified_at)

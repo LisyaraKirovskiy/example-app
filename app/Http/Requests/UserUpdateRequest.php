@@ -14,16 +14,17 @@ class UserUpdateRequest extends FormRequest
 
     public function rules(): array
     {
-        $userId = $this->route('user'); // получаем ID из маршрута
+        $userId = $this->route('user');
 
         return [
             'name' => 'required|min:3|max:50',
             'email' => [
                 'required',
                 'email',
-                Rule::unique('users')->ignore($userId) // игнорируем текущего пользователя
+                Rule::unique('users')->ignore($userId)
             ],
-            'password' => 'nullable|min:5|max:20|confirmed', // nullable для update
+            'password' => 'nullable|min:5|max:20|confirmed',
+            'avatar' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048'
         ];
     }
 
@@ -39,6 +40,9 @@ class UserUpdateRequest extends FormRequest
             'password.confirmed' => 'Пароли не совпадают',
             'password.min' => 'Пароль должен содержать не менее 5 символов',
             'password.max' => 'Пароль не должен превышать 20 символов',
+            'avatar.image' => 'Файл должен быть изображением',
+            'avatar.mimes' => 'Допустимые форматы: jpeg, png, gif',
+            'avatar.max' => 'Максимальный размер файла 2MB',
         ];
     }
 }

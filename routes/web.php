@@ -14,4 +14,3 @@ Route::resource('users', UserController::class);
 //     Route::delete('{id}', [HomeController::class, 'destroy'])->name('users.destroy');
 //     Route::patch('{id}', [HomeController::class, 'update'])->name('users.update');
 // });
-

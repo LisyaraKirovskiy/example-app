@@ -27,10 +27,14 @@
 
                         <div class="row">
                             <div class="col-md-4 text-center mb-4">
-                                <div class="avatar-circle mb-3">
-                                    <div class="avatar-initials display-4 fw-bold text-white rounded-circle d-inline-flex align-items-center justify-content-center"
-                                        style="width: 100px; height: 100px; background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);">
-                                        {{ strtoupper(substr($user->name, 0, 1)) }}
+                                <div class="d-flex flex-row">
+                                    <div class="rounded-circle bg-gradient d-flex align-items-center justify-content-center text-white fw-bold shadow-sm"
+                                        style="width: 80px; height: 80px; background: #6366f1; margin-left: 80px;"
+                                        id="circle">
+                                        <img id="avatar" src="{{ asset($user->avatarPath()) }}" alt="Avatar"
+                                            class="rounded-circle w-100 h-100 object-fit-cover d-flex align-items-center justify-content-center"
+                                            style="margin-left:15px;">
+                                        <span id="avatar-placeholder" class="fs-1">?</span>
                                     </div>
                                 </div>
                                 <h5 class="fw-bold">{{ $user->name }}</h5>

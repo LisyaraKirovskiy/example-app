@@ -18,6 +18,7 @@ class UserStoreRequest extends FormRequest
                 'name' => 'required|min:5|max:50',
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|confirmed|min:5|max:20',
+                'avatar' => 'nullable|image|mimes:jpeg,png,gif|max:2048'
             ]
         ;
     }
@@ -34,6 +35,9 @@ class UserStoreRequest extends FormRequest
             'password.confirmed' => 'Пароли не совпадают',
             'password.min' => 'Пароль должен содержать не менее 5 символов',
             'password.max' => 'Пароль не должен превышать 20 символов',
+            'avatar.image' => 'Файл должен быть изображением',
+            'avatar.mimes' => 'Допустимые форматы: jpeg, png, gif',
+            'avatar.max' => 'Максимальный размер файла 2MB',
         ];
     }
 }

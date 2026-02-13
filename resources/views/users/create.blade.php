@@ -64,8 +64,26 @@
                                     <div>{{ session('success') }}</div>
                                 </div>
                             @endif
-                            <form action="{{ route('users.store') }}" method="POST">
+                            <form action="{{ route('users.store') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
+                                <!-- ------------------------------------------------------------------------------------------------------------- -->
+                                <div class="d-flex flex-row gap-5">
+                                    <div class="rounded-circle bg-gradient d-flex align-items-center justify-content-center text-white fw-bold shadow-sm overflow-hidden"
+                                        style="width: 80px; height: 80px; background: #6366f1">
+                                        <img id="avatar-preview" src="" alt="Avatar"
+                                            class="rounded-circle w-100 h-100 object-fit-cover d-none">
+                                        <span id="avatar-placeholder" class="fs-1">?</span>
+                                    </div>
+                                    <div class="d-flex flex-column gap-1 mt-3">
+                                        <input type="file" name="avatar" id="avatar" class="form-control">
+                                        <p for="avatar" class="small">JPG,JPEG,PNG,GIF</p>
+                                        @error('avatar')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+
+                                </div>
+                                <!-- ------------------------------------------------------------------------------------------------------------- -->
 
                                 <div class="mb-3">
                                     <label class="form-label">Имя <span class="text-danger">*</span></label>
@@ -106,4 +124,26 @@
     </body>
 
     </html>
+    <script>
+        document.getElementById('avatar').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            const preview = document.getElementById('avatar-preview');
+            const placeholder = document.getElementById('avatar-placeholder');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.classList.remove('d-none');
+                    placeholder.classList.add('d-none');
+                }
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = '';
+                preview.classList.add('d-none');
+                placeholder.classList.remove('d-none');
+            }
+
+        });
+    </script>
 @endsection
