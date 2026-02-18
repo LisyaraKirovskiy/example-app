@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Traits\Filter;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -15,11 +16,12 @@ use Illuminate\Notifications\Notifiable;
  *@property string $email
  *@property string $password
  *@property Carbon $created_at
+ *@property string $slug
  */
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, Filter;
 
     /**
      * The attributes that are mass assignable.
@@ -65,7 +67,13 @@ class User extends Authenticatable
         if ($this->avatar) {
             $folderPath = $this->created_at->format('Y/m');
             return 'storage/' . $folderPath . '/' . $this->avatar->path;
+        } else {
+            return asset('storage/Default/default.jpg');
         }
-        return null;
+    }
+
+    public function phones(): HasMany
+    {
+        return $this->hasMany(Phone::class);
     }
 }

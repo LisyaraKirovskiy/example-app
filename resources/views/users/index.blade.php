@@ -26,6 +26,47 @@
 
         <div class="card shadow">
             <div class="card-body">
+                <form method="GET" action="{{ route('users.index') }}" class="p-3 border rounded">
+                    <div class="row g-1 align-items-center">
+                        <div class="col-md-2">
+                            <input type="text" class="form-control" name="name" placeholder="Имя"
+                                value="{{ request('name') }}">
+                        </div>
+                        <div class="col-md-2">
+                            <input type="text" class="form-control" name="slug" placeholder="Slug"
+                                value="{{ request('slug') }}">
+                        </div>
+                        <div class="col-md-2">
+                            <input type="text" class="form-control" name="email" placeholder="Email"
+                                value="{{ request('email') }}">
+                        </div>
+                        <div class="col-md-2">
+                            <div class="d-flex align-items-center gap-1">
+                                <span class="text-nowrap">от</span>
+                                <input type="date" class="form-control" name="date_from" value="{{ request('date_from') }}">
+                            </div>
+                            <div class="d-flex align-items-center gap-1 mt-1">
+                                <span class="text-nowrap">до</span>
+                                <input type="date" class="form-control" name="date_to" value="{{ request('date_to') }}">
+                            </div>
+                        </div>
+
+                        <div class="col-md-1">
+                            <select class="form-select" name="status">
+                                <option value="">Статус</option>
+                                <option value="active" {{ request('status') == 'active' ? 'selected' : '' }} name="active">
+                                    Активен</option>
+                                <option value="inactive" name="inactive">Неактивен</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1">
+                            <button type="submit" class="btn btn-primary w-100">Поиск</button>
+                        </div>
+                        <div class="col-md-1">
+                            <a href="{{ route('users.index') }}" class="btn btn-outline-secondary w-100">X</a>
+                        </div>
+                    </div>
+                </form>
                 @if($users->count() > 0)
                     <div class="table-responsive">
                         <table class="table table-hover">
@@ -34,7 +75,9 @@
                                     <th>ID</th>
                                     <th>Аватар</th>
                                     <th>Пользователь</th>
+                                    <th>Slug</th>
                                     <th>Email</th>
+                                    <th>Телефон</th>
                                     <th>Дата регистрации</th>
                                     <th></th>
                                     <th></th>
@@ -60,17 +103,38 @@
 
                                                 <div>
                                                     <div class="fw-bold">{{ $user->name }}</div>
-                                                    @if($user->email_verified_at)
+                                                    @if($user->active == true)
                                                         <small class="text-success">
-                                                            <i class="fas fa-check-circle"></i> Подтвержден
+                                                            <i class="fas fa-check-circle"></i> Активен
+                                                        </small>
+                                                    @else
+                                                        <small class="text-danger">
+                                                            <i class="fas fa-check-circle"></i> Не активен
                                                         </small>
                                                     @endif
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
+                                            <div class="d-flex align-items-center">
+
+                                                <div>
+                                                    <div class="fw-bold">{{ $user->slug }}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
                                             <i class="fas fa-envelope text-muted me-1"></i>
                                             {{ $user->email }}
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div>
+                                                    @foreach ($user->phones as $phone)
+                                                        <div>{{ $phone->phoneBrand->name }} : {{ $phone->number }} </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
                                         </td>
                                         <td>
                                             <div class="text-muted small">{{ $user->created_at->format('d.m.Y') }}</div>

@@ -8,16 +8,20 @@ use App\Repository\User\UserRepository;
 use Illuminate\Http\RedirectResponse;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\Request;
 class UserController extends Controller
 {
     public function __construct(private readonly UserRepository $userRepository)
     {
 
     }
-    public function index(): View
+    public function index(Request $request): View
     {
-        $users = User::orderBy('created_at')->paginate(10);
-        return view('users.index', ['users' => $users]);
+        $query = User::query()->select(['id', 'name', 'slug', 'email', 'active', 'created_at'])->
+            with('phones:id,phone_brand_id,user_id,number', 'phones.phoneBrand:id,name')
+            ->with('avatar:user_id,path')
+            ->filter($request);
+        return view('users.index', ['users' => $query->paginate(10)->withQueryString()]);
     }
     public function create(): View
     {

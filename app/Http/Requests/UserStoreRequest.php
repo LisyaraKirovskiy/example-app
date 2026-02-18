@@ -18,7 +18,7 @@ class UserStoreRequest extends FormRequest
                 'name' => 'required|min:5|max:50',
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|confirmed|min:5|max:20',
-                'avatar' => 'nullable|image|mimes:jpeg,png,gif|max:2048'
+                'avatar' => 'nullable|file|image|mimes:jpeg,png,gif|max:2048'
             ]
         ;
     }

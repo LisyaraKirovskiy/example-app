@@ -6,15 +6,18 @@ use App\Http\Requests\UserUpdateRequest;
 use App\Models\Avatar;
 use App\Models\User;
 use Exception;
+use Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class UserRepository implements UserRepositoryInterface
 {
     public function store(UserStoreRequest $userStoreRequest): User
     {
+
         $validated = $userStoreRequest->validated();
         DB::beginTransaction();
         try {
@@ -22,7 +25,8 @@ class UserRepository implements UserRepositoryInterface
             $newUser = new User();
             $newUser->name = $validated['name'];
             $newUser->email = $validated['email'];
-            $newUser->password = $validated['password'];
+            $newUser->password = Hash::make($validated['password']);
+            $newUser->slug = Str::slug($validated['name']);
             $newUser->save();
 
             //**@var string $folderLevel */
@@ -40,11 +44,9 @@ class UserRepository implements UserRepositoryInterface
         } catch (Exception $exception) {
             DB::rollBack();
             Log::critical($exception->getMessage());
+            dd('ОШИБКА!!!!!!!!!!!!!!!!!!!' . ':' . $exception->getMessage());
             throw new BadRequestException($exception->getMessage());
         }
-
-
-
     }
     public function update(UserUpdateRequest $userUpdateRequest, User $user): User
     {
@@ -58,6 +60,7 @@ class UserRepository implements UserRepositoryInterface
             if ($userUpdateRequest->filled('password')) {
                 $updateData['password'] = $validated['password'];
             }
+            $user->slug = Str::slug($validated['name']);
             $user->update($updateData);
             if ($userUpdateRequest->hasFile('avatar')) {
                 if ($user->avatar != null) {
