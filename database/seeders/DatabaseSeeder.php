@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\PhoneBrand;
+use App\Models\Roles;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -30,7 +31,19 @@ class DatabaseSeeder extends Seeder
                 'name' => $brand
             ]);
         }
-        User::factory()->has(Phone::factory()->count(3), 'phones')->count(100)->create();
+        $roles = [
+            'Guest',
+            'Moderator',
+            'Admin',
+        ];
+        foreach ($roles as $role) {
+            Roles::query()->firstOrCreate([
+                'role' => $role
+            ], [
+                'role' => $role
+            ]);
+        }
+        User::factory()->has(Phone::factory()->count(1), 'phones')->count(5)->create();
 
         // User::factory()->create([
         //     'name' => 'Test User',

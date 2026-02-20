@@ -6,6 +6,7 @@ namespace App\Models;
 use App\Traits\Filter;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -75,5 +76,20 @@ class User extends Authenticatable
     public function phones(): HasMany
     {
         return $this->hasMany(Phone::class);
+    }
+
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Roles::class, 'role_id');
+    }
+
+    public function isAdmin(User $user): bool
+    {
+        return $user->role->role == 'Admin';
+    }
+
+    public function isModerator(User $user): bool
+    {
+        return $user->role->role == 'Moderator';
     }
 }

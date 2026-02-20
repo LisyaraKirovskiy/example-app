@@ -15,5 +15,3 @@ Route::resource('users', UserController::class)->middleware('auth');
 //     Route::patch('{id}', [HomeController::class, 'update'])->name('users.update');
 // });
 Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

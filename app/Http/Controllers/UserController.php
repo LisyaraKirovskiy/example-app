@@ -17,9 +17,10 @@ class UserController extends Controller
     }
     public function index(Request $request): View
     {
-        $query = User::query()->select(['id', 'name', 'slug', 'email', 'active', 'created_at'])->
+        $query = User::query()->select(['id', 'name', 'slug', 'email', 'active', 'created_at', 'role_id'])->
             with('phones:id,phone_brand_id,user_id,number', 'phones.phoneBrand:id,name')
             ->with('avatar:user_id,path')
+            ->with('role:id,role')
             ->filter($request);
         return view('users.index', ['users' => $query->paginate(10)->withQueryString()]);
     }
@@ -44,12 +45,14 @@ class UserController extends Controller
 
     public function edit(User $user): View
     {
+        $this->authorize('update-user', $user);
         return view('users.edit', compact('user'));
     }
 
 
     public function update(UserUpdateRequest $userUpdateRequest, User $user): RedirectResponse
     {
+        $this->authorize('update-user', $user);
         $this->userRepository->update($userUpdateRequest, $user);
         return redirect()->route('users.show', $user)
             ->with('success', 'Данные пользователя обновлены!');
@@ -58,6 +61,7 @@ class UserController extends Controller
 
     public function destroy(User $user): RedirectResponse
     {
+        $this->authorize('delete-user', $user);
         $this->userRepository->destroy($user);
         return redirect()->route('users.index')
             ->with('success', "Пользователь '{$user->name}' удален!");

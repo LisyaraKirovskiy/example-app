@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts.app')
 @section('title', 'Список пользователей')
 
 @section('content')
@@ -79,13 +79,14 @@
                                     <th>Email</th>
                                     <th>Телефон</th>
                                     <th>Дата регистрации</th>
+                                    <th>Роль</th>
                                     <th></th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($users as $user)
-                                    <tr>
+                                    <tr onclick="window.location='{{ route('users.show', $user) }}'">
                                         <td class="fw-bold">#{{ $user->id }}</td>
                                         <td>
                                             <div class="">
@@ -141,15 +142,27 @@
                                             <small>{{ $user->created_at->diffForHumans() }}</small>
                                         </td>
                                         <td>
-                                            <a href="{{ route('users.edit', $user) }}" class="btn btn-primary">Редактировать</a>
+                                            <div class="d-flex align-items-center">
+                                                <div
+                                                    class="@if($user->role->role == 'Admin') text-danger @elseif ($user->role->role == 'Moderator') text-primary @else text-muted @endif">
+                                                    {{ $user->role->role ?? 'Нет роли'}}
+                                                </div>
+                                            </div>
                                         </td>
-                                        <td>
-                                            <form action="{{ route('users.destroy', $user) }}" method="post">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger">Удалить</a>
-                                            </form>
-                                        </td>
+                                        @can('update-user', $user)
+                                            <td>
+                                                <a href="{{ route('users.edit', $user) }}" class="btn btn-primary">Редактировать</a>
+                                            </td>
+                                        @endcan
+                                        @can('delete-user')
+                                            <td>
+                                                <form action="{{ route('users.destroy', $user) }}" method="post">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger">Удалить</a>
+                                                </form>
+                                            </td>
+                                        @endcan
                                     </tr>
                                 @endforeach
                             </tbody>

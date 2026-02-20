@@ -44,7 +44,6 @@ class UserRepository implements UserRepositoryInterface
         } catch (Exception $exception) {
             DB::rollBack();
             Log::critical($exception->getMessage());
-            dd('ОШИБКА!!!!!!!!!!!!!!!!!!!' . ':' . $exception->getMessage());
             throw new BadRequestException($exception->getMessage());
         }
     }
@@ -76,6 +75,13 @@ class UserRepository implements UserRepositoryInterface
                             'user_id' => $user->id,
                         ]);
                     }
+                } else {
+                    $folderLevel = $user->created_at->format('Y/m');
+                    $pathName = $userUpdateRequest->file('avatar')->store($folderLevel, 'public');
+                    Avatar::query()->create([
+                        'path' => last(explode('/', $pathName)),
+                        'user_id' => $user->id,
+                    ]);
                 }
             }
             DB::commit();
