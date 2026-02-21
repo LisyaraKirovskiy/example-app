@@ -67,6 +67,41 @@
                                     value="{{ old('email', $user->email) }}" placeholder="email@example.com" required>
                             </div>
 
+                            <div class="mb-3">
+                                <label class="form-label">Телефон</label>
+                                <div class="d-flex flex-column">
+
+
+                                    @if($user->phones->isNotEmpty())
+                                        @foreach ($user->phones as $index => $phone)
+                                            <div class="d-flex flex-row">
+                                                <select name="phones[{{ $index }}][brand_id]" id="phoneBrand" class="form-control">
+                                                    @foreach ($phoneBrands as $phoneBrand)
+                                                        <option value="{{ $phone->phone_brand_id }}" {{ $phone->phone_brand_id == $phoneBrand->id ? 'selected' : '' }}>
+                                                            {{ $phoneBrand->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                <input name="phones[{{ $index }}][number]" type="phone" value="{{ $phone->number }}"
+                                                    class="form-control">
+                                            </div>
+                                        @endforeach
+                                    @endif
+
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row">
+                                <select name="phones[{{ count($user->phones) }}][brand_id]" class="form-control">
+                                    @foreach ($phoneBrands as $phoneBrand)
+                                        <option value="{{ $phoneBrand->id }}">
+                                            {{ $phoneBrand->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+
+                                <input name="phones[{{ count($user->phones) }}][number]" type="phone" class="form-control"
+                                    placeholder="Номер телефона">
+                            </div>
                             <div class="mb-4">
                                 <label class="form-label">Новый пароль</label>
                                 <input type="password" name="password" class="form-control"
@@ -78,6 +113,16 @@
                                 <input type="password" name="password_confirmation" class="form-control"
                                     placeholder="Повторите новый пароль">
                             </div>
+                            @can('change-role')
+                                <div class="mb-3">
+                                    <label class="form-label">Роль</label>
+                                    <select class="form-control" name="role">
+                                        <option value="{{ 1 }}" {{ $user->role_id == 1 ? 'selected' : '' }}>Guest</option>
+                                        <option value="{{ 2 }}" {{ $user->role_id == 2 ? 'selected' : '' }}>Moderator</option>
+                                        <option value="{{ 3 }}" {{ $user->role_id == 3 ? 'selected' : '' }}>Admin</option>
+                                    </select>
+                                </div>
+                            @endcan
                             <div class="d-flex justify-content-between mt-4">
                                 <a href="{{ route('users.show', $user) }}" class="btn btn-secondary">
                                     Отмена

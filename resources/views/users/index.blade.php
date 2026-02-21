@@ -9,9 +9,11 @@
                     <h1 class="h3">
                         <i class="fas fa-users text-primary me-2"></i>Пользователи
                     </h1>
-                    <a href="{{ route('users.create') }}" class="btn btn-primary">
-                        <i class="fas fa-plus me-1"></i> Добавить пользователя
-                    </a>
+                    @can('create-user')
+                        <a href="{{ route('users.create') }}" class="btn btn-primary">
+                            <i class="fas fa-plus me-1"></i> Добавить пользователя
+                        </a>
+                    @endcan
                 </div>
                 <p class="text-muted mb-0">Всего пользователей: {{ $users->total() }}</p>
             </div>

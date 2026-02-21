@@ -37,12 +37,11 @@
                                         <span id="avatar-placeholder" class="fs-1">?</span>
                                     </div>
                                 </div>
-                                <h5 class="fw-bold">{{ $user->name }}</h5>
-                                <span class="badge bg-{{ $user->email_verified_at ? 'success' : 'warning' }}">
-                                    {{ $user->email_verified_at ? 'Подтвержден' : 'Не подтвержден' }}
-                                </span>
+                                <h4 class="fw-bold mt-4">{{ $user->name }}</h4>
+                                @foreach ($user->phones as $phone)
+                                    <div>{{ $phone->phoneBrand->name }} : {{ $phone->number }} </div>
+                                @endforeach
                             </div>
-
                             <div class="col-md-8">
                                 <div class="card mb-3">
                                     <div class="card-body">
@@ -62,6 +61,16 @@
                                                     <i class="fas fa-envelope text-muted me-1"></i>
                                                     {{ $user->email }}
                                                 </p>
+                                            </div>
+
+                                            <div class="col-6 mb-3">
+                                                <small class="text-muted">Slug</small>
+                                                <p class="fw-bold mb-0">{{ $user->slug }}</p>
+                                            </div>
+
+                                            <div class="col-6 mb-3">
+                                                <small class="text-muted">Роль</small>
+                                                <p class="fw-bold mb-0">{{ $user->role->role }}</p>
                                             </div>
 
                                             <div class="col-6 mb-3">
@@ -107,17 +116,21 @@
                         </div>
 
                         <div class="d-flex justify-content-between mt-4 pt-3 border-top">
-                            <a href="{{ route('users.edit', $user) }}" class="btn btn-primary">
-                                <i class="fas fa-edit me-1"></i> Редактировать
-                            </a>
-                            <form action="{{ route('users.destroy', $user) }}" method="post">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger" data-bs-toggle="modal"
-                                    data-bs-target="#deleteModal">
-                                    <i class="fas fa-trash me-1"></i> Удалить
-                                </button>
-                            </form>
+                            @can('update-user', $user)
+                                <a href="{{ route('users.edit', $user) }}" class="btn btn-primary">
+                                    <i class="fas fa-edit me-1"></i> Редактировать
+                                </a>
+                            @endcan
+                            @can('delete-user')
+                                <form action="{{ route('users.destroy', $user) }}" method="post">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger" data-bs-toggle="modal"
+                                        data-bs-target="#deleteModal">
+                                        <i class="fas fa-trash me-1"></i> Удалить
+                                    </button>
+                                </form>
+                            @endcan
                         </div>
                     </div>
                 </div>

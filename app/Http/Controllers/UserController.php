@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
+use App\Models\PhoneBrand;
 use App\Repository\User\UserRepository;
 use Illuminate\Http\RedirectResponse;
 use App\Models\User;
@@ -17,8 +18,8 @@ class UserController extends Controller
     }
     public function index(Request $request): View
     {
-        $query = User::query()->select(['id', 'name', 'slug', 'email', 'active', 'created_at', 'role_id'])->
-            with('phones:id,phone_brand_id,user_id,number', 'phones.phoneBrand:id,name')
+        $query = User::query()->select(['id', 'name', 'slug', 'email', 'active', 'created_at', 'role_id'])
+            ->with('phones:id,phone_brand_id,user_id,number', 'phones.phoneBrand:id,name')
             ->with('avatar:user_id,path')
             ->with('role:id,role')
             ->filter($request);
@@ -26,12 +27,14 @@ class UserController extends Controller
     }
     public function create(): View
     {
+        $this->authorize('create-user');
         return view('users.create');
     }
 
 
     public function store(UserStoreRequest $userStoreRequest): RedirectResponse
     {
+        $this->authorize('create-user');
         $this->userRepository->store($userStoreRequest);
         return redirect()->back()->with('success', 'Пользователь успешно создан');
     }
@@ -46,7 +49,8 @@ class UserController extends Controller
     public function edit(User $user): View
     {
         $this->authorize('update-user', $user);
-        return view('users.edit', compact('user'));
+        $phoneBrands = PhoneBrand::all();
+        return view('users.edit', compact('user', 'phoneBrands'));
     }
 
 

@@ -22,11 +22,13 @@ class UserRepository implements UserRepositoryInterface
         DB::beginTransaction();
         try {
 
-            $newUser = new User();
-            $newUser->name = $validated['name'];
-            $newUser->email = $validated['email'];
-            $newUser->password = Hash::make($validated['password']);
-            $newUser->slug = Str::slug($validated['name']);
+            $newUser = User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+                'slug' => Str::slug($validated['name']),
+            ]);
+
             $newUser->save();
 
             //**@var string $folderLevel */
@@ -55,34 +57,38 @@ class UserRepository implements UserRepositoryInterface
             $updateData = [
                 'name' => $validated['name'],
                 'email' => $validated['email'],
+                'slug' => Str::slug($validated['name']),
+                'role_id' => $validated['role'],
             ];
             if ($userUpdateRequest->filled('password')) {
                 $updateData['password'] = $validated['password'];
             }
-            $user->slug = Str::slug($validated['name']);
             $user->update($updateData);
-            if ($userUpdateRequest->hasFile('avatar')) {
-                if ($user->avatar != null) {
-                    if (file_exists($user->avatarPath())) {
-                        $user->avatar->delete();
-                        $pathToFile = $user->created_at->format('Y/m') . '/' . $user->avatar->path;
-                        Storage::disk('public')->delete($pathToFile);
 
-                        $folderLevel = $user->created_at->format('Y/m');
-                        $pathName = $userUpdateRequest->file('avatar')->store($folderLevel, 'public');
-                        Avatar::query()->create([
-                            'path' => last(explode('/', $pathName)),
-                            'user_id' => $user->id,
-                        ]);
-                    }
-                } else {
-                    $folderLevel = $user->created_at->format('Y/m');
-                    $pathName = $userUpdateRequest->file('avatar')->store($folderLevel, 'public');
-                    Avatar::query()->create([
-                        'path' => last(explode('/', $pathName)),
-                        'user_id' => $user->id,
+            $user->phones()->delete();
+
+            foreach ($userUpdateRequest->phones as $phoneData) {
+                if (!empty($phoneData['number'])) {
+                    $user->phones()->create([
+                        'phone_brand_id' => $phoneData['brand_id'],
+                        'number' => $phoneData['number']
                     ]);
                 }
+            }
+
+            if ($userUpdateRequest->hasFile('avatar')) {
+                if ($user->avatar) {
+
+                    $pathToFile = $user->created_at->format('Y/m') . '/' . $user->avatar->path;
+                    Storage::disk('public')->delete($pathToFile);
+                    $user->avatar->delete();
+                }
+                $folderLevel = $user->created_at->format('Y/m');
+                $pathName = $userUpdateRequest->file('avatar')->store($folderLevel, 'public');
+                Avatar::query()->create([
+                    'path' => last(explode('/', $pathName)),
+                    'user_id' => $user->id,
+                ]);
             }
             DB::commit();
             return $user;

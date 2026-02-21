@@ -31,5 +31,12 @@ class AuthServiceProvider extends ServiceProvider
             return $user->isAdmin($user);
         });
 
+        Gate::define("change-role", function (User $user): bool {
+            return $user->isAdmin($user);
+        });
+
+        Gate::define("create-user", function (User $user): bool {
+            return $user->isAdmin($user);
+        });
     }
 }

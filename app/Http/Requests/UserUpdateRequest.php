@@ -24,7 +24,11 @@ class UserUpdateRequest extends FormRequest
                 Rule::unique('users')->ignore($userId)
             ],
             'password' => 'nullable|min:5|max:20|confirmed',
-            'avatar' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048'
+            'avatar' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+            'slug' => 'nullable',
+            'role' => 'nullable|integer|min:1|max:3',
+            'phoneBrand' => 'nullable|exists:phone_brands,id',
+            'phoneNumber' => 'nullable|string|max:20'
         ];
     }
 
