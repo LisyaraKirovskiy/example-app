@@ -2,9 +2,9 @@
 @section('title', 'Профиль: ' . $user->name)
 
 @section('content')
-    <div class="container py-4">
+    <div class="container-fluid py-4">
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-8" style="max-width: 100%;">
                 <div class="card shadow">
                     <div class="card-header bg-primary text-white">
                         <div class="d-flex justify-content-between align-items-center">
@@ -16,7 +16,6 @@
                             </a>
                         </div>
                     </div>
-
                     <div class="card-body">
                         @if(session('success'))
                             <div class="alert alert-success alert-dismissible fade show">
@@ -29,7 +28,7 @@
                             <div class="col-md-4 text-center mb-4">
                                 <div class="d-flex flex-row">
                                     <div class="rounded-circle bg-gradient d-flex align-items-center justify-content-center text-white fw-bold shadow-sm"
-                                        style="width: 80px; height: 80px; background: #6366f1; margin-left: 80px;"
+                                        style="width: 80px; height: 80px; background: #6366f1; margin-left: 150px;"
                                         id="circle">
                                         <img id="avatar" src="{{ asset($user->avatarPath()) }}" alt="Avatar"
                                             class="rounded-circle w-100 h-100 object-fit-cover d-flex align-items-center justify-content-center"
@@ -115,10 +114,10 @@
                             </div>
                         </div>
 
-                        <div class="d-flex justify-content-between mt-4 pt-3 border-top">
+                        <div class="d-flex justify-content-between mt-4 pt-3">
                             @can('update-user', $user)
                                 <a href="{{ route('users.edit', $user) }}" class="btn btn-primary">
-                                    <i class="fas fa-edit me-1"></i> Редактировать
+                                    Редактировать
                                 </a>
                             @endcan
                             @can('delete-user')
@@ -127,10 +126,46 @@
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger" data-bs-toggle="modal"
                                         data-bs-target="#deleteModal">
-                                        <i class="fas fa-trash me-1"></i> Удалить
+                                        Удалить
                                     </button>
                                 </form>
                             @endcan
+                        </div>
+                        <div class="border-top pt-3 mt-3">
+                            <div class="row g-3">
+                                @foreach ($videos as $video)
+                                    <div class="col-12 col-md-6 col-lg-4">
+                                        <div class="text-center mb-0 ">
+                                            <a href="{{ route('videos.show', $video) }}"
+                                                class="d-inline-block px-3 py-1 rounded"
+                                                style="text-decoration: none; background-color: rgb(13, 110, 253); color: white; font-family: Calibri; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                                {{ $video->name }}
+                                            </a>
+                                        </div>
+                                        <iframe width="100%" height="200" src={{ "https://rutube.ru/play/embed/" . $video->path }} style="border: none;" allow="clipboard-write;" webkitAllowFullScreen
+                                            mozallowfullscreen allowFullScreen></iframe>
+
+                                        <div class="d-flex flex-row" style="width:100%;">
+                                            @can('update-video', $video)
+                                                <a class="btn btn-primary" href="{{ route('videos.edit', $video) }}"
+                                                    style="width:50%;">Редактировать</a>
+                                            @endcan
+                                            @can('delete-video', $video)
+                                                <form action="{{ route('videos.destroy', $video) }}" style="width:50%;"
+                                                    method="post">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button class="btn btn-danger" type="submit"
+                                                        style="width:100%;">Удалить</button>
+                                                </form>
+                                            @endcan
+                                        </div>
+                                    </div>
+                                @endforeach
+                                <div class="d-flex justify-content-center mt-4">
+                                    {{ $videos->links('pagination::bootstrap-4') }}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

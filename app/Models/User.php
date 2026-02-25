@@ -94,4 +94,14 @@ class User extends Authenticatable
     {
         return $user->role->role == 'Moderator';
     }
+
+    public function videos(): HasMany
+    {
+        return $this->hasMany(Video::class);
+    }
+
+    public function statistics(): HasMany
+    {
+        return $this->hasMany(Statistic::class);
+    }
 }

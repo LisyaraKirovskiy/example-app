@@ -42,7 +42,9 @@ class UserController extends Controller
 
     public function show(User $user): View
     {
-        return view('users.show', ['user' => $user]);
+        $videos = $user->videos()->paginate(3);
+
+        return view('users.show', compact('user', 'videos'));
     }
 
 

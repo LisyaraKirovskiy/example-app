@@ -9,11 +9,15 @@
                     <h1 class="h3">
                         <i class="fas fa-users text-primary me-2"></i>Пользователи
                     </h1>
-                    @can('create-user')
-                        <a href="{{ route('users.create') }}" class="btn btn-primary">
-                            <i class="fas fa-plus me-1"></i> Добавить пользователя
-                        </a>
-                    @endcan
+                    <div class="d-flex flex-row gap-2">
+                        @can('create-user')
+                            <a href="{{ route('users.create') }}" class="btn btn-primary">
+                                <i class="fas fa-plus me-1"></i> Добавить пользователя
+                            </a>
+                        @endcan
+                        <a href="{{ route('videos.create') }}" class="btn btn-success">Добавить видео</a>
+                    </div>
+
                 </div>
                 <p class="text-muted mb-0">Всего пользователей: {{ $users->total() }}</p>
             </div>
