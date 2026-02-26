@@ -34,4 +34,12 @@ class Video extends Model
         return $this->hasMany(Statistic::class);
     }
 
+    public function likesCount(): int
+    {
+        return $this->statistics->where('is_liked', true)->count();
+    }
+    public function dislikesCount(): int
+    {
+        return $this->statistics->where('is_liked', false)->count();
+    }
 }

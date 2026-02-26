@@ -25,27 +25,28 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Gate::define("update-user", function (User $user, User $targetUser): bool {
-            return $user->isAdmin($user) || $user->isModerator($user) || $user->id == $targetUser->id;
+            return $user->isAdmin() || $user->isModerator() || $user->id == $targetUser->id;
         });
 
-        Gate::define("delete-user", function (User $user): bool {
-            return $user->isAdmin($user);
+        Gate::define("delete-user", function (User $user, User $targetUser): bool {
+            return $user->isAdmin() || $user->id == $targetUser->id;
         });
 
         Gate::define("change-role", function (User $user): bool {
-            return $user->isAdmin($user);
+            return $user->isAdmin();
         });
 
         Gate::define("create-user", function (User $user): bool {
-            return $user->isAdmin($user);
+            return $user->isAdmin();
         });
 
         Gate::define("delete-video", function (User $user, Video $targetVideo): bool {
-            return $user->isAdmin($user) || $user->isModerator($user) || $user->id == $targetVideo->user->id;
+            return $user->isAdmin() || $user->isModerator() || $user->id == $targetVideo->user->id;
         });
 
         Gate::define("update-video", function (User $user, Video $targetVideo): bool {
-            return $user->isAdmin($user) || $user->isModerator($user) || $user->id == $targetVideo->user->id;
+            return $user->isAdmin() || $user->isModerator() || $user->id == $targetVideo->user_id;
         });
+
     }
 }

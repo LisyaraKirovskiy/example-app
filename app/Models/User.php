@@ -85,14 +85,14 @@ class User extends Authenticatable
         return $this->belongsTo(Roles::class, 'role_id');
     }
 
-    public function isAdmin(User $user): bool
+    public function isAdmin(): bool
     {
-        return $user->role->role == 'Admin';
+        return $this->role->role == 'Admin';
     }
 
-    public function isModerator(User $user): bool
+    public function isModerator(): bool
     {
-        return $user->role->role == 'Moderator';
+        return $this->role->role == 'Moderator';
     }
 
     public function videos(): HasMany

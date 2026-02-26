@@ -160,7 +160,7 @@
                                                 <a href="{{ route('users.edit', $user) }}" class="btn btn-primary">Редактировать</a>
                                             </td>
                                         @endcan
-                                        @can('delete-user')
+                                        @can('delete-user', $user)
                                             <td>
                                                 <form action="{{ route('users.destroy', $user) }}" method="post">
                                                     @csrf

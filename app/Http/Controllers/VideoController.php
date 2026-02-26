@@ -14,11 +14,6 @@ class VideoController extends Controller
     public function __construct(private readonly VideoRepository $videoRepository)
     {
     }
-    public function index()
-    {
-        //
-    }
-
     public function create(): View
     {
         return view("videos.create");
@@ -37,13 +32,13 @@ class VideoController extends Controller
 
     public function edit(Video $video): View
     {
-        $this->authorize('update-video');
+        $this->authorize('update-video', $video);
         return view('videos.edit', ['video' => $video]);
     }
 
     public function update(VideoUpdateRequest $videoUpdateRequest, Video $video): RedirectResponse
     {
-        $this->authorize('update-video');
+        $this->authorize('update-video', $video);
         $this->videoRepository->update($videoUpdateRequest, $video);
         return redirect()->route('users.show', $video->user)->with("success", "Видео успешно обновлено!");
     }

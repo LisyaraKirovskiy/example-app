@@ -18,16 +18,17 @@
                 <span>{{ $video->created_at->format('d.m.Y') }}</span>
             </div>
 
-            <div>
-                <button class="btn btn-outline-success btn-sm me-1">
-                    👍
+            <form method="post" action="{{ route('statistics.store') }}">
+                @csrf
+                <input type="hidden" name="video_id" value="{{ $video->id }}">
+                <button type="submit" class="btn btn-outline-success btn-md me-1" name="like" value="true">
+                    👍{{ $video->likesCount() }}
                 </button>
-                <button class="btn btn-outline-danger btn-sm">
-                    👎
+                <button type=" submit" class="btn btn-outline-danger btn-md" name="like" value="false">
+                    👎{{ $video->dislikesCount() }}
                 </button>
-            </div>
+            </form>
         </div>
-
         <form action="{{ route('users.show', $video->user) }}"
             class="d-flex flex-column align-items-start p-0 bg-light rounded text-center">
             <button class="d-flex flex-row border-0 bg-light align-items-center">
@@ -40,13 +41,16 @@
                     <small class="text-muted">Автор видео</small>
                 </div>
             </button>
+        </form>
 
-
-            @if($video->description)
-                <div class="mt-3 p-0 bg-light rounded">
-                    <p class="mb-0"><span class="text-muted">Описание: </span>{{ $video->description }}</p>
-                </div>
-            @endif
+        @if($video->description)
+            <div class="mt-3 p-0 bg-light rounded">
+                <p class="mb-0"><span class="text-muted">Описание: </span>{{ $video->description }}</p>
+            </div>
+        @endif
     </div>
+
+
+
 
 @endsection

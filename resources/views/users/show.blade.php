@@ -120,7 +120,7 @@
                                     Редактировать
                                 </a>
                             @endcan
-                            @can('delete-user')
+                            @can('delete-user', $user)
                                 <form action="{{ route('users.destroy', $user) }}" method="post">
                                     @csrf
                                     @method('DELETE')

@@ -39,12 +39,18 @@ class VideoRepository implements VideoRepositoryInterface
     public function update(VideoUpdateRequest $videoUpdateRequest, Video $video): Video
     {
         $validated = $videoUpdateRequest->validated();
+        if ($validated['path'] != $video->path) {
+            $validatedPath = str_contains($validated['path'], 'embed') ? explode('/', $validated['path'])[5] : explode('/', $validated['path'])[4];
+        } else {
+            $validatedPath = $validated['path'];
+        }
+        ;
         DB::beginTransaction();
         try {
             $updateData = [
                 'name' => $validated['name'],
                 'description' => $validated['description'],
-                'path' => str_contains($validated['path'], 'embed') ? explode('/', $validated['path'])[5] : explode('/', $validated['path'])[4],
+                'path' => $validatedPath,
             ];
 
             $video->update($updateData);
