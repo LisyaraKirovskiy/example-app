@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::resource('users', UserController::class)->middleware('auth');
-Route::resource('videos', VideoController::class)->middleware('auth');
-Route::resource('statistics', StatisticController::class)->middleware('auth');
+Route::resource('videos', VideoController::class)->middleware('auth')
+    ->except('index'); //TODO
+Route::resource('statistics', StatisticController::class)->middleware('auth')
+    ->except('index', 'create', 'show', 'update', 'destroy', 'edit');
 
 Auth::routes();
